@@ -52,13 +52,13 @@ save recent, replace
 }
 
 use recent, clear
-keep if month == 5 & day >= 4
+keep if month == 5
 
 //make predictions
 if 1==1 { // 0->24, 24->48, 0->48 hours
 gen total12 = total02 - total01 //24-48 hours
 foreach c in $classes {
-	replace count01_`c' = . if dt < 2
+	replace count01_`c' = . if dt < 2 //don't have 48 hours of data
 	replace count02_`c' = . if dt < 2
 	gen count12_`c' = count02_`c' - count01_`c'
 	gen p01_`c' = count01_`c' / total01
@@ -99,11 +99,12 @@ qui	sum `p'
 
 /*
 
-So 0-48 hours beats 0-24 slightly and they both crush 24-48
+So 0-24 hours beats 0-48 slightly and they both crush 24-48
 
-score01:  -1.032e-06
-score02:  0
-score12:  -.00710427
+score01:  0
+score02:  -.00004734
+score12:  -.00724639
+
 */
 
 	
